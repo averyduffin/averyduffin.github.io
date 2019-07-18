@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
-date:   2019-07-16 23:06:57 -0600
-categories: jekyll update
+title:  "Javascript for vs forEach vs for…in loop"
+date:   2019-07-17 23:06:57 -0600
+categories: javascript react begginner
 ---
 Javascript has many features that make it nice to work with. Iterating over objects is one of those features. Classically in programming we use a for loop to iterate over a list of items or objects.
 
