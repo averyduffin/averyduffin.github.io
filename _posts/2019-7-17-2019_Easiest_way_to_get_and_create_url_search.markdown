@@ -50,7 +50,7 @@ To create a url with parameters it's really simple also. Once again we use a bro
 
 Here's the compatibility of this function.
 
-![](https://miro.medium.com/max/2000/1*FW3hPS3WSC9xR7ASS0BydQ.png =250x)
+![](https://miro.medium.com/max/2000/1*FW3hPS3WSC9xR7ASS0BydQ.png)
 
 [https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams?source=post_page---------------------------)
 
