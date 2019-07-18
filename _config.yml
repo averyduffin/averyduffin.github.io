@@ -23,6 +23,9 @@ twitter_username: DuffinAvery
 github_username:  averyduffin
 linkedin_username: avery-duffin-69317228
 
+# Add your google-analytics ID here to activate google analytics
+google_analytics:   UA-144099775-1 # out your google-analytics code
+
 # Build settings
 markdown: kramdown
 paginate:           5
