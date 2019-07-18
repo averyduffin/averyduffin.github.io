@@ -4,23 +4,75 @@ title:  "Welcome to Jekyll!"
 date:   2019-07-16 23:06:57 -0600
 categories: jekyll update
 ---
-BLAHDY
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+Javascript has many features that make it nice to work with. Iterating over objects is one of those features. Classically in programming we use a for loop to iterate over a list of items or objects.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+The traditional for loops looks as follows:
 
-Jekyll also offers powerful support for code snippets:
-
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+{% highlight javascript %}
+for (i = 0; i < 10; i++) {\
+  // do something\
+}
 {% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+This is nice but now you have to worry about indices. This can get a bit hairy and if your like me and hate looking at tons of variables then id use this as a last resort.
 
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+Javascript has created two alternatives forEach and for...in
+
+forEach()
+=========
+
+If you have an array. Such as the following:
+
+{% highlight javascript %}
+const newArr =  [ 12, 34, 56, 43 ]
+{% endhighlight %}
+
+In javascript all arrays have the functional property forEach. You use it by specifying a function that takes a parameter. Everytime your function is called its being called with each item in the array.
+
+
+{% highlight javascript %}
+const newArr =  [ 12, 34, 56, 43 ]newArr.forEach( (item) => {\
+  console.log(item)\
+});// prints\
+// 12\
+// 34\
+// 56\
+// 43
+{% endhighlight %}
+
+If you don't have a need to break early while iterating over an array this is a great function to use.
+
+for...in
+======
+
+A for in loop can be very useful. Use a for...in loop to iterate over any object thats enumerable. Meaning an array or object or strings. If you are using a for...in loop over an object it will give you the value to each key in the object.
+
+{% highlight javascript %}
+const obj = {\
+  foo: 1,\
+  blah: 2,\
+  car: 3,\
+  dog: 4\
+}
+
+for (let elem in obj) {\
+  console.log( obj[elem] )\
+}// Returns\
+// 1\
+// 2\
+// 3\
+// 4
+{% endhighlight %}
+
+For...in loops do not have a specific order for execution. Therefore you shouldn't use it if you are expecting a specific order.
+
+If you need to guarantee order on an object. I recommend specifying either an index in your objects or put your keys in an array.
+
+Conclusion
+==========
+
+Javascript has made functions that are easier to iterate over enumerable objects on. While we can use these there may be a few cases when we will still want to rely on the plain old for loop.
+
+Happy coding!
+
+follow me on twitter
