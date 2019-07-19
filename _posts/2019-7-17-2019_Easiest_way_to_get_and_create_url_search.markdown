@@ -15,9 +15,9 @@ Get URL
 
 First thing we need to do is get the URL. Pretty simple really. All browsers support the url on the window with `window.location`.
 
-~~~ javascript
+<pre><code class="javascript">
 const url = window.location
-~~~
+</code></pre>
 
 That was easy.
 
@@ -34,14 +34,14 @@ First thing we want to do is make a new URL object. Then we can use a function o
 
 Heres the code:
 
-~~~ javascript
+<pre><code class="javascript">
   const url = window.location; // http://google.com?id=test 
   const urlObject = new URL(url); 
   const id = urlObject.searchParams.get('id') 
   console.log(id) 
   // prints 
   // test
-~~~
+</code></pre>
 
 If `id` doesn't exist then id will be null.
 
@@ -60,7 +60,7 @@ Here's the compatibility of this function.
 
 Here's a list of the example options the constructor can take.
 
-~~~ javascript
+<pre><code class="javascript">
   const url = new URL('https://example.com?foo=1&bar=2'); 
   // Retrieve params via url.search 
   // url.search ?foo=1&bar=2 
@@ -69,15 +69,15 @@ Here's a list of the example options the constructor can take.
   const params3 = new URLSearchParams([["foo", 1],["bar", 2]]); 
   // Pass in a record 
   const params4 = new URLSearchParams({"foo" : 1 , "bar" : 2});
-~~~
+</code></pre>
 
 So you can decide how you want to pass in these search parameters but here's what I do.
 
-~~~ javascript
+<pre><code class="javascript">
   const params = { id: 'blahdy' } 
   const paramString = new URLSearchParams(params) 
   console.log(``http://google.com?${paramString.toString()}``)
-~~~
+</code></pre>
 
 Conclusion
 ==========
