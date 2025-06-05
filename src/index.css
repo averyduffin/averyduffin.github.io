@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for code blocks to fit the new theme */
+pre {
+  background-color: #2C3A5A; /* Dark blue background for code */
+  color: #F0F5F9; /* Light text color */
+  padding: 1.25em;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
+code {
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.9em;
+}
+
+/* Basic syntax highlighting colors adjusted for the new blue palette */
+.text-blue-700 { color: #3C5C8C; }   /* HTML tags, comments */
+.text-blue-600 { color: #006C9C; }   /* Keywords */
+.text-green-600 { color: #82E0AA; }  /* Strings (a contrasting green for visibility) */
+.text-orange-600 { color: #F5B041; } /* Numbers (a contrasting orange for visibility) */
+.italic { font-style: italic; }
+.font-semibold { font-weight: 600; }
