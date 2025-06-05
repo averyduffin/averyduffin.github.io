@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Rss, Code, User, Github, Linkedin, Mail } from 'lucide-react'; // HomeIcon removed as per new design aesthetic
+import { Rss, Code, User, Github, Linkedin, Mail } from 'lucide-react';
+import { HashRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom'; // Import HashRouter and routing hooks
 
 // Main App Component
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  // currentPage state is no longer directly used for routing; React Router manages this.
+  // We'll use useNavigate hook within components for navigation.
 
   // Placeholder data for blog posts and projects
   const blogPosts = [
@@ -191,109 +193,45 @@ module.exports = {
     },
   ];
 
-  // Component to render based on currentPage state
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home setCurrentPage={setCurrentPage} />;
-      case 'blog':
-        return <Blog posts={blogPosts} setCurrentPage={setCurrentPage} />;
-      case 'blogPost':
-        const postId = new URLSearchParams(window.location.search).get('id');
-        const post = blogPosts.find(p => p.id === postId);
-        return post ? <BlogPost post={post} /> : <NotFound />;
-      case 'projects':
-        return <Projects projects={projects} setCurrentPage={setCurrentPage} />;
-      case 'projectDetail':
-        const projectId = new URLSearchParams(window.location.search).get('id');
-        const project = projects.find(p => p.id === projectId);
-        return project ? <ProjectDetail project={project} /> : <NotFound />;
-      case 'about':
-        return <About />;
-      default:
-        return <NotFound />;
-    }
-  };
-
-  // Handle browser back/forward buttons
-  useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname.substring(1); // Remove leading slash
-      const searchParams = new URLSearchParams(window.location.search);
-
-      if (path.startsWith('blog-post/')) {
-        setCurrentPage('blogPost');
-      } else if (path.startsWith('project-detail/')) {
-        setCurrentPage('projectDetail');
-      } else if (path === 'blog') {
-        setCurrentPage('blog');
-      } else if (path === 'projects') {
-        setCurrentPage('projects');
-      } else if (path === 'about') {
-        setCurrentPage('about');
-      } else {
-        setCurrentPage('home');
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // Update URL and currentPage when navigation happens
-  const navigateTo = (page, id = null) => {
-    let url = '';
-    switch (page) {
-      case 'home':
-        url = '/';
-        break;
-      case 'blog':
-        url = '/blog';
-        break;
-      case 'blogPost':
-        url = `/blog-post/?id=${id}`;
-        break;
-      case 'projects':
-        url = '/projects';
-        break;
-      case 'projectDetail':
-        url = `/project-detail/?id=${id}`;
-        break;
-      case 'about':
-        url = '/about';
-        break;
-      default:
-        url = '/';
-    }
-    window.history.pushState({ page, id }, '', url);
-    setCurrentPage(page);
-  };
-
   return (
-    <div className="min-h-screen flex flex-col bg-blue-50 font-inter text-blue-900">
-      <Header navigateTo={navigateTo} currentPage={currentPage} />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        {renderPage()}
-      </main>
-      <Footer />
-    </div>
+    <HashRouter> {/* Wrap the entire app in HashRouter */}
+      <div className="min-h-screen flex flex-col bg-blue-50 font-inter text-blue-900">
+        <Header /> {/* Header no longer needs navigateTo and currentPage */}
+        <main className="flex-grow container mx-auto px-4 py-8">
+          <Routes> {/* Define routes using Routes and Route components */}
+            <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<Blog posts={blogPosts} />} />
+            <Route path="/blog-post/:id" element={<BlogPost posts={blogPosts} />} /> {/* Use route parameter for ID */}
+            <Route path="/projects" element={<Projects projects={projects} />} />
+            <Route path="/project-detail/:id" element={<ProjectDetail projects={projects} />} /> {/* Use route parameter for ID */}
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} /> {/* Catch-all for 404 */}
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </HashRouter>
   );
 }
 
 // Header Component
-function Header({ navigateTo, currentPage }) {
+function Header() {
+  const navigate = useNavigate(); // Use useNavigate hook
   const navItems = [
-    { name: 'Blog', page: 'blog', icon: Rss },
-    { name: 'Projects', page: 'projects', icon: Code },
-    { name: 'About', page: 'about', icon: User },
+    { name: 'Blog', path: '/blog', icon: Rss }, // Use 'path' instead of 'page'
+    { name: 'Projects', path: '/projects', icon: Code },
+    { name: 'About', path: '/about', icon: User },
   ];
+
+  // Determine current path for active link styling
+  const currentPath = window.location.hash.substring(1) || '/'; // Get path from hash
 
   return (
     <header className="bg-white text-blue-900 shadow-sm p-4">
       <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center">
         <h1 className="text-3xl font-bold mb-4 sm:mb-0">
-          <a href="#" onClick={() => navigateTo('home')} className="hover:text-blue-700 transition-colors duration-300">
-            Develop With Avery
+          <a href="#/" onClick={() => navigate('/')} className="hover:text-blue-700 transition-colors duration-300">
+            Develop with Avery
           </a>
         </h1>
         <nav>
@@ -301,13 +239,13 @@ function Header({ navigateTo, currentPage }) {
             {navItems.map((item) => (
               <li key={item.name}>
                 <a
-                  href={`#${item.page}`}
+                  href={`#${item.path}`} // Link to hash paths
                   onClick={(e) => {
                     e.preventDefault();
-                    navigateTo(item.page);
+                    navigate(item.path); // Use navigate for internal routing
                   }}
                   className={`text-lg font-medium px-3 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2
-                    ${currentPage === item.page ? 'text-blue-700 font-semibold' : 'hover:text-blue-700'}
+                    ${currentPath === item.path ? 'text-blue-700 font-semibold' : 'hover:text-blue-700'}
                   `}
                 >
                   <item.icon size={20} />
@@ -323,7 +261,8 @@ function Header({ navigateTo, currentPage }) {
 }
 
 // Home Component
-function Home({ setCurrentPage }) {
+function Home() {
+  const navigate = useNavigate(); // Use useNavigate hook
   return (
     <section className="py-16 bg-white rounded-lg shadow-xl animate-fade-in md:flex items-center justify-between p-8">
       <div className="text-left md:w-1/2">
@@ -332,13 +271,13 @@ function Home({ setCurrentPage }) {
         </h2>
         <div className="flex flex-col sm:flex-row gap-4 mt-10">
           <button
-            onClick={() => setCurrentPage('blog')}
+            onClick={() => navigate('/blog')} // Use navigate for internal routing
             className="bg-blue-900 text-white font-semibold py-3 px-8 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-blue-800"
           >
             Read the blog <Rss className="inline-block ml-2" size={20} />
           </button>
           <button
-            onClick={() => setCurrentPage('projects')}
+            onClick={() => navigate('/projects')} // Use navigate for internal routing
             className="border-2 border-blue-900 text-blue-900 bg-white font-semibold py-3 px-8 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-blue-100"
           >
             View Projects <Code className="inline-block ml-2" size={20} />
@@ -358,7 +297,8 @@ function Home({ setCurrentPage }) {
 }
 
 // Blog List Component
-function Blog({ posts, setCurrentPage }) {
+function Blog({ posts }) { // Removed setCurrentPage prop
+  const navigate = useNavigate(); // Use useNavigate hook
   return (
     <section className="bg-white rounded-lg shadow-xl p-8 animate-fade-in">
       <h2 className="text-4xl font-bold text-blue-900 mb-8 text-center">My Blog Posts</h2>
@@ -377,7 +317,7 @@ function Blog({ posts, setCurrentPage }) {
               </p>
               <p className="text-blue-800 mb-5 line-clamp-3">{post.snippet}</p>
               <button
-                onClick={() => setCurrentPage('blogPost', post.id)}
+                onClick={() => navigate(`/blog-post/${post.id}`)} // Use navigate for internal routing with ID
                 className="inline-flex items-center text-blue-700 hover:text-blue-900 font-medium transition-colors duration-200"
               >
                 Read More
@@ -405,7 +345,22 @@ function Blog({ posts, setCurrentPage }) {
 }
 
 // Single Blog Post Component
-function BlogPost({ post }) {
+function BlogPost({ posts }) { // Now receives posts prop to find the post
+  const { id } = useParams(); // Get ID from URL parameter
+  const navigate = useNavigate(); // Use useNavigate hook
+  const post = posts.find(p => p.id === id); // Find the post by ID
+
+  // If post not found, navigate to 404 or home
+  useEffect(() => {
+    if (!post) {
+      navigate('/404'); // Or navigate to a more appropriate fallback
+    }
+  }, [post, navigate]);
+
+  if (!post) {
+    return null; // Or a loading spinner while navigating
+  }
+
   // Simple syntax highlighting (can be replaced by a proper library like highlight.js)
   useEffect(() => {
     document.querySelectorAll('pre code').forEach((block) => {
@@ -431,7 +386,7 @@ function BlogPost({ post }) {
       </p>
       <div className="prose prose-lg max-w-none text-blue-800 leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content }} />
       <button
-        onClick={() => window.history.back()} // Go back to previous page
+        onClick={() => navigate(-1)} // Go back to previous page in history
         className="mt-8 bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2 px-5 rounded-full transition-colors duration-300 shadow"
       >
         &larr; Back to Blog
@@ -441,7 +396,8 @@ function BlogPost({ post }) {
 }
 
 // Projects List Component
-function Projects({ projects, setCurrentPage }) {
+function Projects({ projects }) { // Removed setCurrentPage prop
+  const navigate = useNavigate(); // Use useNavigate hook
   return (
     <section className="bg-white rounded-lg shadow-xl p-8 animate-fade-in">
       <h2 className="text-4xl font-bold text-blue-900 mb-8 text-center">My Development Projects</h2>
@@ -473,7 +429,7 @@ function Projects({ projects, setCurrentPage }) {
                 ))}
               </div>
               <button
-                onClick={() => setCurrentPage('projectDetail', project.id)}
+                onClick={() => navigate(`/project-detail/${project.id}`)} // Use navigate for internal routing with ID
                 className="inline-flex items-center text-blue-700 hover:text-blue-900 font-medium transition-colors duration-200"
               >
                 Learn More
@@ -501,7 +457,22 @@ function Projects({ projects, setCurrentPage }) {
 }
 
 // Single Project Detail Component
-function ProjectDetail({ project }) {
+function ProjectDetail({ projects }) { // Now receives projects prop to find the project
+  const { id } = useParams(); // Get ID from URL parameter
+  const navigate = useNavigate(); // Use useNavigate hook
+  const project = projects.find(p => p.id === id); // Find the project by ID
+
+  // If project not found, navigate to 404 or home
+  useEffect(() => {
+    if (!project) {
+      navigate('/404'); // Or navigate to a more appropriate fallback
+    }
+  }, [project, navigate]);
+
+  if (!project) {
+    return null; // Or a loading spinner while navigating
+  }
+
   return (
     <section className="bg-white rounded-lg shadow-xl p-8 max-w-3xl mx-auto animate-fade-in">
       <img
@@ -548,7 +519,7 @@ function ProjectDetail({ project }) {
         )}
       </div>
       <button
-        onClick={() => window.history.back()} // Go back to previous page
+        onClick={() => navigate(-1)} // Go back to previous page in history
         className="mt-8 bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2 px-5 rounded-full transition-colors duration-300 shadow"
       >
         &larr; Back to Projects
@@ -559,6 +530,7 @@ function ProjectDetail({ project }) {
 
 // About Component
 function About() {
+  const navigate = useNavigate(); // Using useNavigate for back button if needed, though not directly used in this component's interaction
   return (
     <section className="bg-white rounded-lg shadow-xl p-8 max-w-3xl mx-auto animate-fade-in">
       <h2 className="text-4xl font-bold text-blue-900 mb-6 text-center">About Me</h2>
@@ -625,19 +597,19 @@ function Footer() {
 
 // Not Found Component
 function NotFound() {
+  const navigate = useNavigate(); // Use useNavigate hook
   return (
     <div className="text-center py-16 bg-white rounded-lg shadow-xl animate-fade-in">
       <h2 className="text-4xl font-bold text-red-600 mb-4">404 - Page Not Found</h2>
       <p className="text-xl text-blue-800">The page you're looking for does not exist.</p>
       <button
-        onClick={() => window.history.back()}
+        onClick={() => navigate('/')} // Navigate back to home
         className="mt-8 bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2 px-5 rounded-full transition-colors duration-300 shadow"
       >
-        Go Back
+        Go to Home
       </button>
     </div>
   );
 }
 
 export default App;
-
