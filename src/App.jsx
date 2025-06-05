@@ -293,7 +293,7 @@ function Header({ navigateTo, currentPage }) {
       <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center">
         <h1 className="text-3xl font-bold mb-4 sm:mb-0">
           <a href="#" onClick={() => navigateTo('home')} className="hover:text-blue-700 transition-colors duration-300">
-            Your Brand
+            Develop With Avery
           </a>
         </h1>
         <nav>
